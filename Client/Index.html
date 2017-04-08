@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>LayIM</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <style>
+        .layim-members-list {
+            position: relative;
+            width: 330px;
+            padding: 10px 10px 0;
+            border: 1px solid #D9D9D9;
+            background-color: #fff;
+            background-color: rgba(255,255,255,.9);
+            box-shadow: none;
+            overflow: hidden;
+            font-size: 0
+        }
+
+        .friend-li {
+            display: block;
+            vertical-align: top;
+            font-size: 14px;
+            width: 100%;
+            height: 48px;
+            margin: 10px 0;
+        }
+
+            .friend-li img {
+                width: 48px;
+                height: 48px;
+                border-radius: 100%;
+                float: left;
+                margin-right: 20px;
+            }
+
+            .friend-li p {
+                text-align: left;
+                margin: 0;
+            }
+
+            .friend-li .layui-icon {
+                font-size: 14px;
+            }
+
+            .friend-li p.remark {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+        h2 {
+            background-color: #fbfbfb;
+            width: 350px;
+            font-size: 22px;
+            text-align: center;
+            padding: 15px 0
+        }
+    </style>
+</head>
+<body>@*
+<div id="friend">
+            <h2><span class="num"></span></h2>
+            <ul class="layim-members-list" id="members-view"></ul>
+        </div>
+    *@
+    <script src="/layui/layui.js"></script>
+    <script src="/Public/js/reconnecting-websocket.js"></script>
+    <script>
+        //定义服务器接口信息
+        var ServerConfig = {
+            BaseUrl: '',
+            SocketServer: 'ws://' + window.location.hostname + ':' + window.location.port + '/Chat/WsChat',
+            UserListUrl: '/Chat/userlist',
+            membersUrl: '',
+            UserListUrl: '',
+            UserListUrl: '',
+            UserListUrl: '',
+        };
+
+
+        //如果使用原生WebSocket，可以不用加载socket模块
+        layui.use(['layim', 'socket', 'layer', 'jquery'], function (layim) {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                socket = new ReconnectingWebSocket();
+            //基础配置
+            layim.config({
+                init: {
+                    url: "/Chat/userlist",//初始化接口
+                    data: {}
+                },
+                members: {
+                    url: "/Chat/grouplist",//查看群员接口
+                    data: {}
+                },
+                uploadImage: {
+                    url: "/Chat/upload", //（返回的数据格式见下文）
+                    type: '' //默认post
+                },
+                uploadFile: {
+                    url: "/Chat/upload",//（返回的数据格式见下文）
+                    type: '' //默认post
+                },
+                //skin: ['http://cdn.firstlinkapp.com/upload/2016_4/1461747766565_14690.jpg'], //皮肤
+                isgroup: true, //是否开启群组
+                chatLog: "/Chat/log/", //聊天记录地址
+                copyright: true //是否授权
+            });
+
+
+            //layim.setChatMin();
+            //监听收到的聊天消息
+            function chatMessage(res) {
+                layim.getMessage(res);
+            };
+
+            //layim建立就绪
+            layim.on('ready', function (res) {
+                //捕捉socket端发来的事件
+                socket.onmessage = function (event) {
+                    var e = JSON.parse(event.data);
+                    switch (e.type) {
+                        //好友上线 添加好友
+                        case 'addList':
+                            addList(e);
+                            break;
+                        //用户上线 把在线用户 加到好友列表
+                        case 'regUser':
+                            regUser(e);
+                            break;
+                        //用户离线移除好哟
+                        case 'out':
+                            out(e);
+                            break;
+                        //处理聊天消息
+                        case 'getMessage':
+                            chatMessage(e.content);
+                            break;
+                        //用户不在线
+                        case 'notLine':
+                            notLine();
+                            break;
+                        case 'js':
+                            console.log(e.cls);
+                            break;
+                        default:
+                            console.log(e);
+                    }
+                }
+
+                //监听发送消息
+                layim.on('sendMessage', function (data) {
+                    var To = data.to;
+                    //发送消息Socket服务
+                    socket.send(JSON.stringify({
+                        type: 'chatMessage',
+                        content: data
+                    }));
+                });
+
+                //用户上线 注册事件
+                var reg = {
+                    type: 'reg',
+                    content: {
+                        uid: '3546',
+                        type: 'friend',
+                        avatar: 'http://q.qlogo.cn/qqapp/101347669/1C5ACDA3779487F1D20DF012EFC55144/100',
+                        username: '摇曳的风筝',
+                        groupid: 1,
+                        id: '3546',
+                        sign: '我的注册时间是2017-04-06 16:32:58'
+                    }
+                }
+
+                setTimeout(function () {
+                    socket.send(JSON.stringify(reg));
+                }, 0);
+            });
+
+            //离线反馈
+            function notLine() {
+                layer.msg('对方不在线');
+            }
+
+            function addList(e) {
+                //如果有用户突然关机，或同一账号两处登陆，系统就会统计有误，查看实际连接数
+                console.log(e.cls);
+                layer.msg("【" + e.content.username + '】上线了，打开在线好友列表和TA聊聊吧', {
+                    shift: 6,
+                    offset: 0,
+                    time: 9000
+                });
+                layim.addList(e.content);
+                //$(".num").text(e.num);
+                //var str = '<li class="friend-li f' + e.content.id + '"> <img src="' + e.content.avatar + '"> <p>' + e.content.username + '  <span class="layui-icon layim-status-online"></span>  </p> <p class="remark">' + e.content.sign + '</p> </li>';
+                //$("#members-view").append(str);
+            }
+
+            //注册
+            function regUser(res) {
+                console.log(res);
+                //$(".num").text(res.num);
+                for (var i = 0; i < res.num; i++) {
+                    layim.addList({
+                        type: 'friend', //列表类型，只支持friend和group两种
+                        avatar: res.uuser[i].avatar, //好友头像
+                        username: res.uuser[i].username, //好友昵称
+                        groupid: 2, //所在的分组id
+                        id: res.uuser[i].id, //好友id
+                        sign: res.uuser[i].sign //好友签名
+                    });
+                    //var str = '<li class="friend-li f' + res.uuser[i].id + '"> <img src="' + res.uuser[i].avatar + '"> <p>' + res.uuser[i].username + '  <span class="layui-icon layim-status-online"></span>  </p> <p class="remark">' + res.uuser[i].sign + '</p> </li>';
+                    //$("#members-view").append(str);
+                }
+            }
+
+            //退出
+            function out(res) {
+                console.log(res.cls);
+                layim.removeList({
+                    type: 'friend', //或者group
+                    id: res.id //好友或者群组ID
+                });
+                //$(".num").text(res.num);
+                $(".f" + res.id).remove();
+            }
+        });
+    </script>
+</body>
+</html>
