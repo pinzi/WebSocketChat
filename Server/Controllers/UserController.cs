@@ -8,8 +8,7 @@ namespace Server.Controllers
 {
     public class UserController : Controller
     {
-        // GET: User
-        public JsonResult Reg()
+        public ActionResult Reg()
         {
             return View();
         }

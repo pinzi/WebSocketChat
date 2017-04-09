@@ -59,14 +59,14 @@
         }
     </style>
 </head>
-<body>@*
-<div id="friend">
-            <h2><span class="num"></span></h2>
-            <ul class="layim-members-list" id="members-view"></ul>
-        </div>
-    *@
+<body>
+    <!--<div id="friend">
+        <h2><span class="num"></span></h2>
+        <ul class="layim-members-list" id="members-view"></ul>
+    </div>-->
+
     <script src="/layui/layui.js"></script>
-    <script src="/Public/js/reconnecting-websocket.js"></script>
+    <script src="/Script/reconnecting-websocket.js"></script>
     <script>
         //定义服务器接口信息
         var ServerConfig = {
@@ -74,9 +74,9 @@
             SocketServer: 'ws://' + window.location.hostname + ':' + window.location.port + '/Chat/WsChat',
             UserListUrl: '/Chat/userlist',
             membersUrl: '',
-            UserListUrl: '',
-            UserListUrl: '',
-            UserListUrl: '',
+            grouplist: '',
+            uploadImage: '',
+            uploadFile: '',
         };
 
 
@@ -84,23 +84,23 @@
         layui.use(['layim', 'socket', 'layer', 'jquery'], function (layim) {
             var layer = layui.layer,
                 $ = layui.jquery,
-                socket = new ReconnectingWebSocket();
+                socket = new ReconnectingWebSocket(ServerConfig.SocketServer);
             //基础配置
             layim.config({
                 init: {
-                    url: "/Chat/userlist",//初始化接口
+                    url: ServerConfig.UserListUrl,//初始化接口
                     data: {}
                 },
                 members: {
-                    url: "/Chat/grouplist",//查看群员接口
+                    url: ServerConfig.grouplist,//查看群员接口
                     data: {}
                 },
                 uploadImage: {
-                    url: "/Chat/upload", //（返回的数据格式见下文）
+                    url: ServerConfig.uploadImage, //（返回的数据格式见下文）
                     type: '' //默认post
                 },
                 uploadFile: {
-                    url: "/Chat/upload",//（返回的数据格式见下文）
+                    url: ServerConfig.uploadFile,//（返回的数据格式见下文）
                     type: '' //默认post
                 },
                 //skin: ['http://cdn.firstlinkapp.com/upload/2016_4/1461747766565_14690.jpg'], //皮肤

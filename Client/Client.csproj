@@ -188,6 +188,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Script\reconnecting-websocket.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
