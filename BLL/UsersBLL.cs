@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using DAL;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BLL
 {
     public class UsersBLL
     {
-        EntityDB db = new EntityDB();
 
-        public string test()
-        {
-            return db.Database.Connection.Database;
-        }
     }
 }
