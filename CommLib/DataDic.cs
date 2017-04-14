@@ -39,35 +39,45 @@ namespace CommLib
             [Description("非法请求")]
             UnLegalRequest = -4,
             /// <summary>
-            /// 参数不合法
-            /// </summary>
-            [Description("参数不合法")]
-            UnLegalParameter = -5,
-            /// <summary>
             /// 签名不合法
             /// </summary>
             [Description("签名不合法")]
-            UnLegalSign = -6,
+            UnLegalSign = -5,
             /// <summary>
             /// 无效的token
             /// </summary>
             [Description("无效的token")]
-            UnLegalToken = -7,
+            UnLegalToken = -6,
+            /// <summary>
+            /// 参数不合法
+            /// </summary>
+            [Description("参数不合法")]
+            UnLegalMethod = -7,
+            /// <summary>
+            /// 参数不合法
+            /// </summary>
+            [Description("参数不合法")]
+            UnLegalParameter = -8,
             /// <summary>
             /// 登陆超时
             /// </summary>
             [Description("登陆超时")]
-            LoginTimeOut = -8,
+            LoginTimeOut = -9,
             /// <summary>
             /// 没有找到对象
             /// </summary>
             [Description("没有找到对象")]
-            NotFoundObject = -9,
+            NotFoundObject = -10,
             /// <summary>
             /// 没有找到数据
             /// </summary>
             [Description("没有找到数据")]
-            NotFoundData = -10,
+            NotFoundData = -11,
+            /// <summary>
+            /// 事务提交失败
+            /// </summary>
+            [Description("事务提交失败")]
+            ErrorDB = -97,
             /// <summary>
             /// 事务提交失败
             /// </summary>

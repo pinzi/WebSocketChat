@@ -17,5 +17,10 @@ namespace Model
         /// </summary>
         [Required]
         public string Method { get; set; }
+        /// <summary>
+        /// 参数签名
+        /// </summary>
+        [Required, StringLength(16, MinimumLength = 16, ErrorMessage = "AccessToken长度必须为16")]
+        public string Sign { get; set; }
     }
 }

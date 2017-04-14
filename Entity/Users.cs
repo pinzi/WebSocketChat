@@ -16,7 +16,7 @@ namespace Entity
         /// <summary>
         /// 昵称
         /// </summary>
-        [Required, StringLength(200, MinimumLength = 1, ErrorMessage = "昵称长度不能小于1，不能超过200")]
+        [Required, StringLength(50, MinimumLength = 1, ErrorMessage = "昵称长度不能小于1位，不能超过50位")]
         public string NickName { get; set; }
         /// <summary>
         /// 性别:0女1男，默认为0
@@ -32,6 +32,11 @@ namespace Entity
         /// 个性签名
         /// </summary>
         public string Motto { get; set; }
+        /// <summary>
+        /// 密码
+        /// </summary>
+        [Required, StringLength(32, MinimumLength = 32, ErrorMessage = "密码密文长度必须为32位")]
+        public string Pwd { get; set; }
         /// <summary>
         /// 上次更新时间
         /// </summary>

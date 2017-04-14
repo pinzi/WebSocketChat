@@ -155,6 +155,10 @@
       <Project>{b6a29cd2-6961-4164-8cff-c3695df12a2a}</Project>
       <Name>CommLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{66C07D14-3FCB-4971-BCF7-060D5FC22110}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{A48647BB-A855-4211-AD3D-A22A12D1B370}</Project>
       <Name>Model</Name>

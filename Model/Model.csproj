@@ -44,10 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OnLineUserModel.cs" />
+    <Compile Include="Request\OnLineUser.cs" />
+    <Compile Include="Request\RequestUserLoginModel.cs" />
+    <Compile Include="Request\RequestUserRegModel.cs" />
     <Compile Include="Response\ApiResult.cs" />
     <Compile Include="Request\RequestBaseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Response\ResponseModel.cs" />
+    <Compile Include="Response\RequestUserLoginOutModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

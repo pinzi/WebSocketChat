@@ -917,5 +917,26 @@ namespace CommLib
                 return string.Empty;
             }
         }
+
+        /// <summary>
+        /// Object扩展方法-类型转换
+        /// </summary>
+        /// <param name="Obj"></param>
+        /// <returns></returns>
+        public static int ToInt(this object Obj)
+        {
+            if (Obj == null)
+            {
+                return 0;
+            }
+            string s = Obj.ToString();
+            if (string.IsNullOrEmpty(s))
+            {
+                return 0;
+            }
+            int Ret = 0;
+            int.TryParse(s, out Ret);
+            return Ret;
+        }
     }
 }

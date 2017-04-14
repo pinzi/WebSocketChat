@@ -50,13 +50,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseBLL.cs" />
+    <Compile Include="OnLineUserBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsersBLL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommLib\CommLib.csproj">
+      <Project>{B6A29CD2-6961-4164-8CFF-C3695DF12A2A}</Project>
+      <Name>CommLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{66C07D14-3FCB-4971-BCF7-060D5FC22110}</Project>
       <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{A48647BB-A855-4211-AD3D-A22A12D1B370}</Project>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

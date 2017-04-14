@@ -52,16 +52,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityDB.cs" />
+    <Compile Include="OnLineUserDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsersDAL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommLib\CommLib.csproj">
+      <Project>{B6A29CD2-6961-4164-8CFF-C3695DF12A2A}</Project>
+      <Name>CommLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entity\Entity.csproj">
       <Project>{D724ED30-5519-47C6-903D-09976ED683C7}</Project>
       <Name>Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{A48647BB-A855-4211-AD3D-A22A12D1B370}</Project>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
