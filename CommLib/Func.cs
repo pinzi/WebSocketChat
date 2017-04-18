@@ -938,5 +938,24 @@ namespace CommLib
             int.TryParse(s, out Ret);
             return Ret;
         }
+
+        /// <summary>
+        /// IEnumerable<string>扩展方法
+        /// </summary>
+        /// <param name="Obj"></param>
+        /// <returns></returns>
+        public static string FirstOrDefault(this IEnumerable<string> Obj)
+        {
+            if (Obj == null)
+            {
+                return null;
+            }
+            string Str = Obj.ToString();
+            if (string.IsNullOrEmpty(Str))
+            {
+                return null;
+            }
+            return Str;
+        }
     }
 }

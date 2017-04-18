@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.0
+VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{27BC8116-322E-409E-A239-902CA83E0136}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{A48647BB-A855-4211-AD3D-A22A12D1B370}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{7ABA6D33-A5A4-41B4-A393-1B6391F5E4C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperSocketServer", "SuperSocketServer\SuperSocketServer.csproj", "{5582EDD5-36F7-4988-8863-D85F2D5E1D9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{7ABA6D33-A5A4-41B4-A393-1B6391F5E4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ABA6D33-A5A4-41B4-A393-1B6391F5E4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ABA6D33-A5A4-41B4-A393-1B6391F5E4C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5582EDD5-36F7-4988-8863-D85F2D5E1D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5582EDD5-36F7-4988-8863-D85F2D5E1D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5582EDD5-36F7-4988-8863-D85F2D5E1D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5582EDD5-36F7-4988-8863-D85F2D5E1D9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

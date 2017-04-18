@@ -74,9 +74,14 @@ namespace CommLib
             [Description("没有找到数据")]
             NotFoundData = -11,
             /// <summary>
-            /// 事务提交失败
+            /// 没有数据被更新
             /// </summary>
-            [Description("事务提交失败")]
+            [Description("没有数据被更新")]
+            NonBeAffected = -97,
+            /// <summary>
+            /// 数据库操作出错
+            /// </summary>
+            [Description("数据库操作出错")]
             ErrorDB = -97,
             /// <summary>
             /// 事务提交失败
@@ -133,6 +138,42 @@ namespace CommLib
             [Description("管理员")]
             Manager = 2
         }
+
+        /// <summary>
+        /// 消息类别
+        /// </summary>
+        public enum MsgType
+        {
+            /// <summary>
+            /// 服务器启动
+            /// </summary>
+            Start,
+            /// <summary>
+            /// 客户端建立连接
+            /// </summary>
+            Connected,
+            /// <summary>
+            /// 收到客户端消息
+            /// </summary>
+            Received,
+            /// <summary>
+            /// 程序异常
+            /// </summary>
+            Error,
+            /// <summary>
+            /// 客户端断开连接
+            /// </summary>
+            Closed,
+            /// <summary>
+            /// 服务器关闭
+            /// </summary>
+            Stop
+        }
+
+
+
+
+
 
         /// <summary>
         /// 是否处于调试模式

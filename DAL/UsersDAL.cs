@@ -1,11 +1,7 @@
 ﻿using CommLib;
 using Entity;
 using Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL
 {
@@ -50,11 +46,36 @@ namespace DAL
             var query = db.Users.Where(u => u.UID == model.UID && u.Pwd == model.Pwd).ToList();
             if (query.Count.Equals(1))
             {
-
+                //身份验证通过，返回accesstoken
+                return new OnLineUserDAL().GenerateAccessToken(model.UID);
             }
-            else
-            { }
-            throw new NotImplementedException();
+            return null;
+        }
+
+        /// <summary>
+        /// 用户退出
+        /// </summary>
+        /// <param name="accessToken">用户身份令牌</param>
+        /// <returns></returns>
+        public int LoginOut(string AccessToken)
+        {
+            var query = db.OnLineUser.Find(AccessToken);
+            if (query == null)
+            {
+                return -2;
+            }
+            db.OnLineUser.Remove(query);
+            return db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="UID">用户UID</param>
+        /// <returns></returns>
+        public Users Query(string UID)
+        {
+            return db.Users.Find(UID);
         }
     }
 }

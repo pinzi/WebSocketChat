@@ -46,7 +46,7 @@ namespace Model
         /// <summary>
         /// 设置返回结果
         /// </summary>
-        public void SetResult(DataDic.ResultCode _ResultCode, string _ResultMsg, dynamic _ResultData, int _ResultCount = 0)
+        public void SetResult(DataDic.ResultCode _ResultCode, string _ResultMsg, dynamic _ResultData = null, int _ResultCount = 0)
         {
             ResultCode = (int)_ResultCode;
             ResultMsg = string.IsNullOrEmpty(_ResultMsg) ? Func.GetEnumDescription(_ResultCode) : _ResultMsg;

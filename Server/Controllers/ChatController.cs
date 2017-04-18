@@ -5,6 +5,8 @@ using Model.Request;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Http;
 
 namespace Server.Controllers
 {
@@ -14,6 +16,7 @@ namespace Server.Controllers
         /// 在线用户
         /// </summary>
         private static OnLineUserModel OnLineUserModel = null;
+
         public async Task<ApiResult> Post(JObject formData)
         {
             ApiResult result = new ApiResult();
@@ -30,7 +33,9 @@ namespace Server.Controllers
             }
             //公共参数为空校验
             RequestBaseModel basemodel = new RequestBaseModel();
-            basemodel = JsonConvert.DeserializeObject<RequestBaseModel>(jsonstring);
+            basemodel.AccessToken = Request.Headers.GetValues("AccessToken").FirstOrDefault();
+            basemodel.Method = Request.Headers.GetValues("Method").FirstOrDefault();
+            basemodel.Sign = Request.Headers.GetValues("Sign").FirstOrDefault();
             if (!ModelState.IsValid)
             {
                 result.SetResult(DataDic.ResultCode.UnPassVerifyModel);
@@ -69,7 +74,7 @@ namespace Server.Controllers
                     }
                 case "commit_usersloginout"://用户退出
                     {
-                        result = await Task.Run(() => new UsersBLL(OnLineUserModel).LoginOut());
+                        result = await Task.Run(() => new UsersBLL(OnLineUserModel).LoginOut(basemodel.AccessToken));
                         return result;
                     }
                 default:
