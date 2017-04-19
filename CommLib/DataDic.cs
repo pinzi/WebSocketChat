@@ -163,7 +163,7 @@ namespace CommLib
             /// <summary>
             /// 客户端断开连接
             /// </summary>
-            Closed,
+            DisConnected,
             /// <summary>
             /// 服务器关闭
             /// </summary>
