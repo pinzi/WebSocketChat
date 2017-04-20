@@ -170,8 +170,20 @@ namespace CommLib
             Stop
         }
 
-
-
+        /// <summary>
+        /// 用户动作
+        /// </summary>
+        public enum UserAction
+        {
+            /// <summary>
+            /// 上线
+            /// </summary>
+            OnLine,
+            /// <summary>
+            /// 下线
+            /// </summary>
+            OffLine
+        }
 
 
 

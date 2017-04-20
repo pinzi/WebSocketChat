@@ -8,26 +8,11 @@ namespace Entity
     /// </summary>
     public class OnLineUser : BaseEntity
     {
-        private string _token;
         /// <summary>
         /// 用户身份令牌
         /// </summary>
         [Key, Required]
-        public string AccessToken
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_token))
-                {
-                    return Guid.NewGuid().ToString();
-                }
-                return _token;
-            }
-            set
-            {
-                _token = value;
-            }
-        }
+        public string AccessToken { get; set; }
         /// <summary>
         /// 用户UID
         /// </summary>

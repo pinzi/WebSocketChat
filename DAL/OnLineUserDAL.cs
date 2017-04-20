@@ -82,5 +82,49 @@ namespace DAL
             }
             return null;
         }
+
+        /// <summary>
+        /// 用户上线
+        /// </summary>
+        /// <param name="UID">用户UID</param>
+        /// <param name="SessionID">用户会话ID</param>
+        /// <returns></returns>
+        public int Add(long UID, string SessionID)
+        {
+            var query = db.OnLineUser.Find(SessionID);
+            if (query != null)
+            {
+                if (query.UID != UID)
+                {
+                    return -3;//用户UID与会话ID不匹配
+                }
+                return -2;//用户在线记录已存在
+            }
+            db.OnLineUser.Add(new OnLineUser()
+            {
+                AccessToken = SessionID,
+                UID = UID,
+                UpdateTime = DateTime.Now,
+                AddTime = DateTime.Now
+            });
+            return db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 用户下线
+        /// </summary>
+        /// <param name="UID">用户UID</param>
+        /// <returns></returns>
+        public int Remove(long UID)
+        {
+            var query = db.OnLineUser.Find(UID);
+            if (query == null)
+            {
+                return -2;//用户在线记录不存在
+            }
+            db.OnLineUser.Remove(query);
+            return db.SaveChanges();
+        }
+
     }
 }

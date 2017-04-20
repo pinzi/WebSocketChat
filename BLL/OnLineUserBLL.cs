@@ -48,5 +48,26 @@ namespace BLL
         {
             return dal.QueryOnLineUser(AccessToken);
         }
+
+        /// <summary>
+        /// 用户上下线
+        /// </summary>
+        /// <param name="UID">用户UID</param>
+        /// <param name="SessionID">用户登录设备ID</param>
+        /// <param name="Ua">动作类别</param>
+        /// <returns></returns>
+        public bool UserOnOffLine(long UID, string SessionID, DataDic.UserAction Ua)
+        {
+            switch (Ua)
+            {
+                case DataDic.UserAction.OnLine://上线
+                    return dal.Add(UID, SessionID) > 0;
+                case DataDic.UserAction.OffLine://下线
+                    return dal.Remove(UID) > 0;
+                default:
+                    return false;
+            }
+        }
+
     }
 }

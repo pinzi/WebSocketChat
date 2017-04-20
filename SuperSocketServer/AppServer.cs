@@ -1,8 +1,9 @@
-﻿using CommLib;
+﻿using BLL;
+using CommLib;
+using Hangfire;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -65,6 +66,8 @@ namespace SuperSocketServer
             StringBuilder MsgText = new StringBuilder();
             MsgText.AppendFormat("用户[{0}]上线了，当前在线人数:{1}", appSession.SessionID, ws.SessionCount);
             SendSysMsgToClient(appSession, MsgText.ToString());
+            OnLineUserBLL bll = new OnLineUserBLL();
+            BackgroundJob.Enqueue(() => bll.UserOnOffLine((long)1, appSession.SessionID, DataDic.UserAction.OnLine));
         }
 
         /// <summary>
@@ -172,7 +175,7 @@ namespace SuperSocketServer
             foreach (var wsSession in wsSessionList)
             {
                 //加入后台计划任务序列
-                HangfireHelper.Enqueue(() => wsSession.Send(MsgText));
+                BackgroundJob.Enqueue(() => wsSession.Send(MsgText));
             }
         }
     }
