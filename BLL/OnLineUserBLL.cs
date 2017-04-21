@@ -56,12 +56,12 @@ namespace BLL
         /// <param name="SessionID">用户登录设备ID</param>
         /// <param name="Ua">动作类别</param>
         /// <returns></returns>
-        public bool UserOnOffLine(long UID, string SessionID, DataDic.UserAction Ua)
+        public bool UserOnOffLine(long UID, string Pwd, string SessionID, DataDic.UserAction Ua)
         {
             switch (Ua)
             {
                 case DataDic.UserAction.OnLine://上线
-                    return dal.Add(UID, SessionID) > 0;
+                    return dal.Add(UID, Pwd, SessionID) > 0;
                 case DataDic.UserAction.OffLine://下线
                     return dal.Remove(UID) > 0;
                 default:

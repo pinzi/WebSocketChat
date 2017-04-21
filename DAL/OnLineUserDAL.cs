@@ -89,24 +89,36 @@ namespace DAL
         /// <param name="UID">用户UID</param>
         /// <param name="SessionID">用户会话ID</param>
         /// <returns></returns>
-        public int Add(long UID, string SessionID)
+        public int Add(long UID, string Pwd, string SessionID)
         {
-            var query = db.OnLineUser.Find(SessionID);
+            var queryU = db.Users.Find(UID);
+            if (queryU == null)
+            {
+                return -2;//用户uid不存在
+            }
+            if (!queryU.Pwd.Equals(Func.MD5Encrypt(Pwd, 32, false)))
+            {
+                return -3;//密码错误
+            }
+            var query = db.OnLineUser.Where(o => o.UID == UID).SingleOrDefault();
             if (query != null)
             {
-                if (query.UID != UID)
-                {
-                    return -3;//用户UID与会话ID不匹配
-                }
-                return -2;//用户在线记录已存在
+                //更新用户会话ID和活跃时间
+                query.SessionID = SessionID;
+                query.UpdateTime = DateTime.Now;
             }
-            db.OnLineUser.Add(new OnLineUser()
+            else
             {
-                AccessToken = SessionID,
-                UID = UID,
-                UpdateTime = DateTime.Now,
-                AddTime = DateTime.Now
-            });
+                //新的用户登录
+                db.OnLineUser.Add(new OnLineUser()
+                {
+                    AccessToken = Guid.NewGuid().ToString(),
+                    UID = UID,
+                    SessionID = SessionID,
+                    UpdateTime = DateTime.Now,
+                    AddTime = DateTime.Now
+                });
+            }
             return db.SaveChanges();
         }
 

@@ -5,7 +5,7 @@
     <title>WebSocket示例</title>
     <script type="text/javascript">
         var ws;//WebSocket对象
-        var wsUrl = "ws://localhost:2012";//支持WebSocket协议的服务器端地址
+        var wsUrl = 'ws://localhost:2012/{"uid":100000,"pwd":"123456"}';//支持WebSocket协议的服务器端地址
 
         function connection() {
             //判断该使用哪种WebSocket对象
@@ -17,7 +17,6 @@
             } else {
                 alert("当前浏览器不支持WebSocket");
             }
-            debugger;
             //注册各类回调
             ws.onopen = function (evt) {
                 console.log(evt);

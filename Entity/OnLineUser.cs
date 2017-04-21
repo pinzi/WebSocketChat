@@ -19,6 +19,11 @@ namespace Entity
         [Required]
         public Int64 UID { get; set; }
         /// <summary>
+        /// 会话ID
+        /// </summary>
+        [Required]
+        public string SessionID { get; set; }
+        /// <summary>
         /// 最后一次更新的时间
         /// </summary>
         public DateTime UpdateTime { get; set; }

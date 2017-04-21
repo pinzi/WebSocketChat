@@ -1,11 +1,13 @@
 ﻿using BLL;
 using CommLib;
 using Hangfire;
+using Model;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 
 namespace SuperSocketServer
 {
@@ -66,8 +68,18 @@ namespace SuperSocketServer
             StringBuilder MsgText = new StringBuilder();
             MsgText.AppendFormat("用户[{0}]上线了，当前在线人数:{1}", appSession.SessionID, ws.SessionCount);
             SendSysMsgToClient(appSession, MsgText.ToString());
+            string StrParamsJson = GetParamsJson(appSession);
+            if (string.IsNullOrEmpty(StrParamsJson))
+            {
+                CloseClientConnection(appSession, "用户名密码不能为空");
+            }
+            RequestUserLoginModel model = Func.JsonStringToObj<RequestUserLoginModel>(StrParamsJson);
+            if (string.IsNullOrEmpty(model.UID.ToString()) || string.IsNullOrEmpty(model.Pwd))
+            {
+                CloseClientConnection(appSession, "用户名密码不能为空");
+            }
             OnLineUserBLL bll = new OnLineUserBLL();
-            BackgroundJob.Enqueue(() => bll.UserOnOffLine((long)1, appSession.SessionID, DataDic.UserAction.OnLine));
+            BackgroundJob.Enqueue(() => bll.UserOnOffLine(model.UID, model.Pwd, appSession.SessionID, DataDic.UserAction.OnLine));
         }
 
         /// <summary>
@@ -177,6 +189,28 @@ namespace SuperSocketServer
                 //加入后台计划任务序列
                 BackgroundJob.Enqueue(() => wsSession.Send(MsgText));
             }
+        }
+
+        /// <summary>
+        /// 获取参数json字符串
+        /// </summary>
+        /// <param name="appSession">客户端会话对象</param>
+        /// <returns></returns>
+        public string GetParamsJson(WebSocketSession appSession)
+        {
+            return HttpUtility.UrlDecode(appSession.Path.TrimStart('/'));
+        }
+
+        /// <summary>
+        /// 关闭服务器与客户端的会话连接
+        /// </summary>
+        /// <param name="appSession"></param>
+        /// <param name="MsgText"></param>
+        void CloseClientConnection(WebSocketSession appSession, string MsgText)
+        {
+            appSession.Close(CloseReason.ServerClosing);
+            appSession.CloseWithHandshake(200, MsgText);
+            return;
         }
     }
 }
