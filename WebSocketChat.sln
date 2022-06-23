@@ -27,6 +27,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.业务", "2.业务", "{80
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.公共", "0.公共", "{AEFA290E-6853-474E-A8F5-2C249D35F6B5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{2CD15852-ED57-48D4-8F6C-71F22E9883BC}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		azure-pipelines-1.yml = azure-pipelines-1.yml
+		azure-pipelines.yml = azure-pipelines.yml
+		README.md = README.md
+		C:\Users\Dell\Desktop\闪电GIF制作软件\show.gif = C:\Users\Dell\Desktop\闪电GIF制作软件\show.gif
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
