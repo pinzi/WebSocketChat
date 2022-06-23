@@ -6,5 +6,4 @@
 
 ## 使用方法
 同时启动Client和SuperSocketServer项目，可以使用不同浏览器打开多个Client，以此实现多用户的效果。
-
-![show](https://github.com/pinzi/WebSocketChat/raw/master/show.gif)
+![show](https://user-images.githubusercontent.com/3843463/175255147-a18a7c5c-de4f-42c8-8657-3f6264ad00c6.jpg)
