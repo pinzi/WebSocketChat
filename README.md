@@ -6,6 +6,5 @@
 
 ## 使用方法
 同时启动Client和SuperSocketServer项目，可以使用不同浏览器打开多个Client，以此实现多用户的效果。
-![show](https://user-images.githubusercontent.com/3843463/175263242-0dc63f17-0409-4cc6-b9d6-a5975eeb3027.gif)
 ![show](/show.gif)
 
