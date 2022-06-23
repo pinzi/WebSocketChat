@@ -9,10 +9,8 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Security;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -32,15 +30,13 @@ namespace CommLib
         public static NameValueCollection GetEnumStringFromEnumValue(Type enumType)
         {
             NameValueCollection nvc = new NameValueCollection();
-            Type typeDescription = typeof(DescriptionAttribute);
-            System.Reflection.FieldInfo[] fields = enumType.GetFields();
-            string strText = string.Empty;
-            string strValue = string.Empty;
+            _ = typeof(DescriptionAttribute);
+            FieldInfo[] fields = enumType.GetFields();
             foreach (FieldInfo field in fields)
             {
                 if (field.FieldType.IsEnum)
                 {
-                    strValue = ((int)enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
+                    string strValue = ((int)enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
                     nvc.Add(strValue, field.Name);
                 }
             }
@@ -68,15 +64,14 @@ namespace CommLib
         {
             NameValueCollection nvc = new NameValueCollection();
             Type typeDescription = typeof(DescriptionAttribute);
-            System.Reflection.FieldInfo[] fields = enumType.GetFields();
-            string strText = string.Empty;
-            string strValue = string.Empty;
+            FieldInfo[] fields = enumType.GetFields();
             foreach (FieldInfo field in fields)
             {
                 if (field.FieldType.IsEnum)
                 {
-                    strValue = ((int)enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
+                    string strValue = ((int)enumType.InvokeMember(field.Name, BindingFlags.GetField, null, null, null)).ToString();
                     object[] arr = field.GetCustomAttributes(typeDescription, true);
+                    string strText;
                     if (arr.Length > 0)
                     {
                         DescriptionAttribute aa = (DescriptionAttribute)arr[0];
@@ -117,7 +112,7 @@ namespace CommLib
             return enumValue.ToString();
         }
 
-        private static ConcurrentDictionary<Enum, string> _ConcurrentDictionary = new ConcurrentDictionary<Enum, string>();
+        private static readonly ConcurrentDictionary<Enum, string> _ConcurrentDictionary = new ConcurrentDictionary<Enum, string>();
 
         /// <summary>
         /// 获取枚举的描述信息(Descripion)。
@@ -237,7 +232,7 @@ namespace CommLib
                 WebRequest req = WebRequest.Create(FilePathUrl);
                 response = req.GetResponse();
                 //LogHelper.Info(response.ToString());
-                result = response == null ? false : true;
+                result = response != null;
             }
             catch
             {
@@ -447,11 +442,9 @@ namespace CommLib
         /// <param name="file"></param>
         public static void SaveFromStream(string saveFilePath, HttpPostedFileBase file)
         {
-            long lStartPos = 0;
             int startPosition = 0;
             int endPosition = 0;
             var contentRange = HttpContext.Current.Request.Headers["Content-Range"];
-            //bytes 10000-19999/1157632
             if (!string.IsNullOrEmpty(contentRange))
             {
                 contentRange = contentRange.Replace("bytes", "").Trim();
@@ -461,6 +454,7 @@ namespace CommLib
                 endPosition = int.Parse(ranges[1]);//上传部分文件流结束位置
             }
             FileStream fs;
+            long lStartPos;
             if (File.Exists(saveFilePath))
             {
                 fs = File.OpenWrite(saveFilePath);//打开已经上传的文件
@@ -486,8 +480,7 @@ namespace CommLib
             }
             fs.Seek(lStartPos, SeekOrigin.Current);
             byte[] nbytes = new byte[512];
-            int nReadSize = 0;
-            nReadSize = file.InputStream.Read(nbytes, 0, 512);
+            int nReadSize = file.InputStream.Read(nbytes, 0, 512);
             while (nReadSize > 0)
             {
                 fs.Write(nbytes, 0, nReadSize);
@@ -588,8 +581,10 @@ namespace CommLib
                 LogHelper.Info("请求的接口url：" + PostUrl);
                 LogHelper.Info("提交给接口的参数：" + ParamData);
             }
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(PostUrl);
+            HttpClient client = new HttpClient
+            {
+                BaseAddress = new Uri(PostUrl)
+            };
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(ContentType));
             StringContent content = new StringContent(ParamData, Encoding.UTF8, ContentType);
             try
@@ -629,26 +624,6 @@ namespace CommLib
             return Result;
         }
 
-        /// <summary>
-        /// 验证https证书
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="certificate"></param>
-        /// <param name="chain"></param>
-        /// <param name="errors"></param>
-        /// <returns></returns>
-        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
-        {
-            if (errors == SslPolicyErrors.None)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         #region 计算地理位置距离
         /// <summary>
         /// 地球赤道半径，单位：km
@@ -659,7 +634,7 @@ namespace CommLib
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        private static double rad(double d)
+        private static double Rad(double d)
         {
             return d * Math.PI / 180.0;
         }
@@ -676,10 +651,10 @@ namespace CommLib
         {
             try
             {
-                double radLat1 = rad(lat1);
-                double radLat2 = rad(lat2);
+                double radLat1 = Rad(lat1);
+                double radLat2 = Rad(lat2);
                 double a = radLat1 - radLat2;
-                double b = rad(lng1) - rad(lng2);
+                double b = Rad(lng1) - Rad(lng2);
 
                 double s = 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(a / 2), 2) +
                  Math.Cos(radLat1) * Math.Cos(radLat2) * Math.Pow(Math.Sin(b / 2), 2)));
@@ -735,9 +710,11 @@ namespace CommLib
         /// <returns></returns>
         public static string ObjToJsonString<T>(object Obj)
         {
-            JsonSerializerSettings jss = new JsonSerializerSettings();
-            jss.NullValueHandling = NullValueHandling.Ignore;
-            jss.DateFormatString = "yyyyMMddHHmmss";
+            JsonSerializerSettings jss = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DateFormatString = "yyyyMMddHHmmss"
+            };
             string JsonString = JsonConvert.SerializeObject(Obj, Newtonsoft.Json.Formatting.Indented, jss);
             return JsonString;
         }
@@ -775,26 +752,6 @@ namespace CommLib
             {
                 return string.Empty;
             }
-        }
-
-        /// <summary>
-        /// calss对象转List
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static List<string> CreateModelProperty<T>(T obj) where T : class
-        {
-            List<string> listColumns = new List<string>();
-            BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
-            Type objType = typeof(T);
-            PropertyInfo[] propInfoArr = objType.GetProperties(bf);
-            foreach (PropertyInfo item in propInfoArr)
-            {
-                object[] objAttrs = item.GetCustomAttributes(typeof(T), true);
-                listColumns.Add(item.Name);
-            }
-            return listColumns;
         }
 
         /// <summary>
@@ -853,7 +810,7 @@ namespace CommLib
                 }
                 if (!firstPath.EndsWith(spliter))
                 {
-                    firstPath = firstPath + spliter;
+                    firstPath += spliter;
                 }
                 builder.Append(firstPath);
                 for (int i = 1; i < paths.Length; i++)
@@ -871,7 +828,7 @@ namespace CommLib
                         }
                         else
                         {
-                            nextPath = nextPath + spliter;
+                            nextPath += spliter;
                         }
                     }
                     builder.Append(nextPath);
@@ -885,7 +842,7 @@ namespace CommLib
         /// </summary>
         /// <param name="name"></param>
         /// <param name="val"></param>
-        public static void addCookie(string name, string val)
+        public static void AddCookie(string name, string val)
         {
             HttpCookie hc = new HttpCookie(name, HttpUtility.UrlEncode(val, Encoding.UTF8));
             if (HttpContext.Current.Request.Cookies[name] != null)
@@ -905,7 +862,7 @@ namespace CommLib
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getCookie(string name)
+        public static string GetCookie(string name)
         {
             HttpCookie v = HttpContext.Current.Request.Cookies[name];
             if (v != null)
@@ -934,8 +891,7 @@ namespace CommLib
             {
                 return 0;
             }
-            int Ret = 0;
-            int.TryParse(s, out Ret);
+            int.TryParse(s, out int Ret);
             return Ret;
         }
 

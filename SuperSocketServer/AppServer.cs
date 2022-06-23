@@ -1,12 +1,13 @@
 ﻿using BLL;
 using CommLib;
-using Hangfire;
 using Model;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Web;
 
 namespace SuperSocketServer
@@ -64,9 +65,10 @@ namespace SuperSocketServer
         /// <param name="appSession">客户端对象</param>
         void Connected(WebSocketSession appSession)
         {
-            ShowMsg(appSession, string.Format("  当前在线人数:{0}", ws.SessionCount), DataDic.MsgType.Connected);
+            ShowMsg(appSession, string.Format("[服务器]:当前在线人数:{0}", ws.SessionCount), DataDic.MsgType.Connected);
             StringBuilder MsgText = new StringBuilder();
-            MsgText.AppendFormat("用户[{0}]上线了，当前在线人数:{1}", appSession.SessionID, ws.SessionCount);
+            MsgText.AppendFormat("[服务器]:用户[{0}]上线了，当前在线人数:{1}", appSession.SessionID, ws.SessionCount);
+            appSession.Send(MsgText.ToString());
             SendSysMsgToClient(appSession, MsgText.ToString());
             string StrParamsJson = GetParamsJson(appSession);
             if (string.IsNullOrEmpty(StrParamsJson))
@@ -79,7 +81,8 @@ namespace SuperSocketServer
                 CloseClientConnection(appSession, "用户名密码不能为空");
             }
             OnLineUserBLL bll = new OnLineUserBLL();
-            BackgroundJob.Enqueue(() => bll.UserOnOffLine(model.UID, model.Pwd, appSession.SessionID, DataDic.UserAction.OnLine));
+            bll.UserOnOffLine(model.UID, model.Pwd, appSession.SessionID, DataDic.UserAction.OnLine);
+            //BackgroundJob.Enqueue(() => );
         }
 
         /// <summary>
@@ -90,7 +93,7 @@ namespace SuperSocketServer
         void Received(WebSocketSession appSession, string MsgText)
         {
             ShowMsg(appSession, MsgText, DataDic.MsgType.Received);
-            SendSysMsgToClient(appSession, string.Format("用户[{0}]说:{1}", appSession.SessionID, MsgText));
+            SendSysMsgToClient(appSession, $"[{appSession.SessionID}]:{MsgText}");
         }
 
         /// <summary>
@@ -132,9 +135,9 @@ namespace SuperSocketServer
                 default:
                     break;
             }
-            ShowMsg(appSession, string.Format("  下线原因：{0}  当前在线人数:{1}", ReasonText, ws.SessionCount), DataDic.MsgType.DisConnected);
+            ShowMsg(appSession, string.Format("[服务器]:下线原因：{0}  当前在线人数:{1}", ReasonText, ws.SessionCount), DataDic.MsgType.DisConnected);
             StringBuilder MsgText = new StringBuilder();
-            MsgText.AppendFormat("用户[{0}]下线了，当前在线人数:{1}", appSession.SessionID, ws.SessionCount);
+            MsgText.AppendFormat("[服务器]:用户[{0}]下线了，当前在线人数:{1}", appSession.SessionID, ws.SessionCount);
             SendSysMsgToClient(appSession, MsgText.ToString());
         }
 
@@ -179,15 +182,20 @@ namespace SuperSocketServer
         void SendSysMsgToClient(WebSocketSession appSession, string MsgText)
         {
             //获取所有在线的客户端
-            IEnumerable<WebSocketSession> wsSessionList = ws.GetAllSessions();
-            //排除当前用户
-            if (appSession == null)
-                wsSessionList.IEnumerableRemove(appSession);
+            List<WebSocketSession> wsSessionList = ws.GetAllSessions().ToList();
             //遍历所有在线客户端对象
             foreach (var wsSession in wsSessionList)
             {
+                if (appSession.SessionID == wsSession.SessionID)
+                {
+                    wsSession.Send(MsgText.Replace(appSession.SessionID, "我"));
+                }
+                else
+                {
+                    wsSession.Send(MsgText);
+                }
                 //加入后台计划任务序列
-                BackgroundJob.Enqueue(() => wsSession.Send(MsgText));
+                //BackgroundJob.Enqueue(() => wsSession.Send(MsgText));
             }
         }
 
