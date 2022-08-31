@@ -70,7 +70,6 @@
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="DataDic.cs" />
     <Compile Include="Func.cs" />
-    <Compile Include="FuncHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
